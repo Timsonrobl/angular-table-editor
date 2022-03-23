@@ -7,3 +7,6 @@
   white-space: nowrap;
   width: 1%;
 }
+td {
+  white-space: pre-line;
+}

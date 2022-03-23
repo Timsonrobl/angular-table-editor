@@ -63,7 +63,6 @@ export class TextComponent implements OnInit {
       });
       this.tableService.table.columns = csvData[0];
       this.tableService.table.data = csvData.splice(1);
-      console.log(csvData);
     }
     this.router.navigate(['table']);
   }
