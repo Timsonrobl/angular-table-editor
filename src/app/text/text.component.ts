@@ -67,8 +67,22 @@ export class TextComponent implements OnInit {
     this.router.navigate(['table']);
   }
 
+  downloadFile(event: MouseEvent) {
+    const target = event.target as HTMLAnchorElement;
+    target.download = `table-export.${this.tableService.exportType}`;
+    const blob = new Blob([this.textInput.value], {
+      type: 'text/plain;charset=utf8',
+    });
+    const url = URL.createObjectURL(blob);
+    target.href = url;
+  }
+
   ngOnInit(): void {
-    if (this.tableService.table.columns.length)
+    if (!this.tableService.table.columns.length) return;
+    if (this.tableService.exportType === 'json') {
       this.textInput.setValue(this.tableService.getJSON());
+    } else {
+      this.textInput.setValue(this.tableService.getCSV());
+    }
   }
 }

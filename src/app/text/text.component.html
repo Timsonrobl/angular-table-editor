@@ -1,16 +1,28 @@
 <div class="form-group">
-  <form>
-    <textarea
-      class="form-control mb-3"
-      placeholder="Введите JSON или CSV"
-      [formControl]="textInput"
-    ></textarea>
+  <textarea
+    class="form-control mb-3"
+    placeholder="Введите JSON или CSV"
+    [formControl]="textInput"
+  ></textarea>
+  <div>
+    <a
+      class="btn btn-primary m-3"
+      *ngIf="textInput.value"
+      (click)="downloadFile($event)"
+    >
+      Сохранить в файл
+    </a>
     <button
       type="button"
-      class="btn btn-primary float-end"
+      class="btn btn-primary float-end m-3"
       (click)="processInput()"
     >
       Продолжить
     </button>
-  </form>
+  </div>
+
+  <div class="m-3">
+    <label for="formFile" class="form-label">Загрузить данные из файла:</label>
+    <input class="form-control" type="file" id="formFile" />
+  </div>
 </div>

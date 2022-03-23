@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { stringify as stringifyCSV } from 'csv-stringify/browser/esm/sync';
+
+export type ExportTypes = 'json' | 'csv';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +12,9 @@ export class TableService {
     data: [] as string[][],
   };
 
-  getJSON() {
+  exportType: ExportTypes = 'json';
+
+  getObjectsArray() {
     // formatting back from 2d array to array of objects
     const formattedObject = [] as { [key: string]: string }[];
     this.table.data.forEach((row, rowIndex) => {
@@ -19,7 +24,17 @@ export class TableService {
           this.table.data[rowIndex][columnIndex];
       });
     });
-    return JSON.stringify(formattedObject);
+    return formattedObject;
+  }
+
+  getJSON() {
+    return JSON.stringify(this.getObjectsArray());
+  }
+  getCSV() {
+    return stringifyCSV(this.getObjectsArray(), {
+      header: true,
+      columns: this.table.columns,
+    });
   }
 
   constructor() {}

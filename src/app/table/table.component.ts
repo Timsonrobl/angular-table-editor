@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TableService } from '../table.service';
+import { ExportTypes, TableService } from '../table.service';
 
 @Component({
   selector: 'app-table',
@@ -13,14 +13,19 @@ export class TableComponent implements OnInit {
 
   trackCell = (index: number, cell: string) => index + cell;
 
-  onExportClick() {
+  onExportClick(type: ExportTypes) {
+    this.tableService.exportType = type;
     this.router.navigate(['text']);
   }
 
   updateCell(event: FocusEvent, row: number, column: number) {
-    debugger;
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLTableCellElement;
     this.table.data[row][column] = target.innerText;
+  }
+
+  updateColumn(event: FocusEvent, column: number) {
+    const target = event.target as HTMLTableCellElement;
+    this.table.columns[column] = target.innerText;
   }
 
   deleteRow(row: number) {
@@ -35,6 +40,13 @@ export class TableComponent implements OnInit {
 
   addRow() {
     this.table.data.push(Array(this.table.columns.length).fill(''));
+  }
+
+  addColumn() {
+    this.table.columns.push('');
+    this.table.data.forEach((row) => {
+      row.push('');
+    });
   }
 
   ngOnInit(): void {
