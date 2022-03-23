@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { TableService } from '../table.service';
+import { parse as parseCSV } from 'csv-parse/browser/esm/sync';
 
 @Component({
   selector: 'app-text',
@@ -15,8 +16,7 @@ export class TextComponent implements OnInit {
     '[{"name":"Name 1","year":"2010"},{"name":"Name 2","year":"1997"},{"name":"Name3","year":"2004"}]'
   );
 
-  processInput() {
-    if (!this.textInput.value) return;
+  parseJSON() {
     // parsing JSON and handling JSON parser errors
     let parsedData; //: { [key: string]: any }[];
     try {
@@ -28,7 +28,7 @@ export class TextComponent implements OnInit {
       return;
     }
 
-    // validating and converting to 2d array data structure
+    // validating data object and converting to 2d array data structure
     if (
       !Array.isArray(parsedData) ||
       parsedData.length === 0 ||
@@ -47,7 +47,24 @@ export class TextComponent implements OnInit {
           : '';
       });
     });
-    this.tableService.table.data = tableData;
+    return tableData;
+  }
+
+  processInput() {
+    if (!this.textInput.value) return;
+    if (this.textInput.value.startsWith('[')) {
+      const tableData = this.parseJSON();
+      if (tableData) {
+        this.tableService.table.data = tableData;
+      } else return;
+    } else {
+      const csvData = parseCSV(this.textInput.value, {
+        skip_empty_lines: true,
+      });
+      this.tableService.table.columns = csvData[0];
+      this.tableService.table.data = csvData.splice(1);
+      console.log(csvData);
+    }
     this.router.navigate(['table']);
   }
 
