@@ -11,11 +11,14 @@ export class TableComponent implements OnInit {
   table = this.tableService.table;
   constructor(private router: Router, private tableService: TableService) {}
 
+  trackCell = (index: number, cell: string) => index + cell;
+
   onExportClick() {
     this.router.navigate(['text']);
   }
 
   updateCell(event: FocusEvent, row: number, column: number) {
+    debugger;
     const target = event.target as HTMLInputElement;
     this.table.data[row][column] = target.innerText;
   }
@@ -28,6 +31,10 @@ export class TableComponent implements OnInit {
     const previous = this.table.data[rowA];
     this.table.data[rowA] = this.table.data[rowB];
     this.table.data[rowB] = previous;
+  }
+
+  addRow() {
+    this.table.data.push(Array(this.table.columns.length).fill(''));
   }
 
   ngOnInit(): void {

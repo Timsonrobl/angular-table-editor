@@ -8,9 +8,16 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let row of table.data; index as rowIndex">
+    <tr
+      *ngFor="
+        let row of table.data;
+        index as rowIndex;
+        first as isFirstRow;
+        last as isLastRow
+      "
+    >
       <td
-        *ngFor="let cell of row; index as columnIndex"
+        *ngFor="let cell of row; index as columnIndex; trackBy: trackCell"
         contenteditable="true"
         (blur)="updateCell($event, rowIndex, columnIndex)"
       >
@@ -21,7 +28,7 @@
           type="button"
           class="btn btn-sm btn-primary"
           title="Переместить вверх"
-          [disabled]="rowIndex === 0"
+          [disabled]="isFirstRow"
           (click)="swapRows(rowIndex, rowIndex - 1)"
         >
           🠕
@@ -30,7 +37,7 @@
           type="button"
           class="btn btn-sm btn-primary mx-1"
           title="Переместить вниз"
-          [disabled]="rowIndex === table.data.length - 1"
+          [disabled]="isLastRow"
           (click)="swapRows(rowIndex, rowIndex + 1)"
         >
           🠗
@@ -42,6 +49,18 @@
           (click)="deleteRow(rowIndex)"
         >
           X
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <td [attr.colspan]="table.columns.length + 1">
+        <button
+          type="button"
+          class="btn btn-sm btn-success"
+          title="Удалить строку"
+          (click)="addRow()"
+        >
+          + Добавить строку
         </button>
       </td>
     </tr>
