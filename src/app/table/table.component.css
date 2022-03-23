@@ -3,3 +3,7 @@
   top: 0;
   background-color: lightgray;
 } */
+.fit {
+  white-space: nowrap;
+  width: 1%;
+}

@@ -15,5 +15,23 @@ export class TableComponent implements OnInit {
     this.router.navigate(['text']);
   }
 
-  ngOnInit(): void {}
+  updateCell(event: FocusEvent, row: number, column: number) {
+    const target = event.target as HTMLInputElement;
+    this.table.data[row][column] = target.innerText;
+  }
+
+  deleteRow(row: number) {
+    this.table.data.splice(row, 1);
+  }
+
+  swapRows(rowA: number, rowB: number) {
+    const previous = this.table.data[rowA];
+    this.table.data[rowA] = this.table.data[rowB];
+    this.table.data[rowB] = previous;
+  }
+
+  ngOnInit(): void {
+    if (!this.tableService.table.columns.length)
+      this.router.navigateByUrl('text');
+  }
 }

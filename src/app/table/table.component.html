@@ -4,12 +4,45 @@
       <th *ngFor="let column of table.columns" scope="col">
         {{ column }}
       </th>
+      <th class="fit"></th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let row of table.data">
-      <td *ngFor="let cell of row" contenteditable [textContent]="cell">
+    <tr *ngFor="let row of table.data; index as rowIndex">
+      <td
+        *ngFor="let cell of row; index as columnIndex"
+        contenteditable="true"
+        (blur)="updateCell($event, rowIndex, columnIndex)"
+      >
         {{ cell }}
+      </td>
+      <td class="fit">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          title="Переместить вверх"
+          [disabled]="rowIndex === 0"
+          (click)="swapRows(rowIndex, rowIndex - 1)"
+        >
+          🠕
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-primary mx-1"
+          title="Переместить вниз"
+          [disabled]="rowIndex === table.data.length - 1"
+          (click)="swapRows(rowIndex, rowIndex + 1)"
+        >
+          🠗
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-danger"
+          title="Удалить строку"
+          (click)="deleteRow(rowIndex)"
+        >
+          X
+        </button>
       </td>
     </tr>
   </tbody>

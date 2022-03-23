@@ -11,7 +11,9 @@ import { TableService } from '../table.service';
 export class TextComponent implements OnInit {
   constructor(private router: Router, private tableService: TableService) {}
 
-  textInput = new FormControl();
+  textInput = new FormControl(
+    '[{"name":"Name 1","year":"2010"},{"name":"Name 2","year":"1997"},{"name":"Name3","year":"2004"}]'
+  );
 
   processInput() {
     if (!this.textInput.value) return;
