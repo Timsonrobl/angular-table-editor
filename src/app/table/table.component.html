@@ -1,0 +1,19 @@
+<table class="table table-hover table-bordered table-responsive">
+  <thead>
+    <tr>
+      <th *ngFor="let column of table.columns" scope="col">
+        {{ column }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of table.data">
+      <td *ngFor="let cell of row" contenteditable [textContent]="cell">
+        {{ cell }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button type="button" class="btn btn-primary" (click)="onExportClick()">
+  Выгрузить
+</button>
