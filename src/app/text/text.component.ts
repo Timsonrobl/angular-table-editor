@@ -12,9 +12,7 @@ import { parse as parseCSV } from 'csv-parse/browser/esm/sync';
 export class TextComponent implements OnInit {
   constructor(private router: Router, private tableService: TableService) {}
 
-  textInput = new FormControl(
-    '[{"name":"Name 1","year":"2010"},{"name":"Name 2","year":"1997"},{"name":"Name3","year":"2004"}]'
-  );
+  textInput = new FormControl('');
 
   processJSON(input: string) {
     // parsing JSON and handling JSON parser errors
