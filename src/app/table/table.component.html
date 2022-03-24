@@ -2,7 +2,11 @@
   <thead>
     <tr>
       <th
-        *ngFor="let column of table.columns; index as columnIndex"
+        *ngFor="
+          let column of table.columns;
+          index as columnIndex;
+          trackBy: trackCell
+        "
         scope="col"
         contenteditable="true"
         (blur)="updateColumn($event, columnIndex)"
@@ -13,10 +17,10 @@
         <button
           type="button"
           class="btn btn-sm btn-success"
-          title="Удалить строку"
+          title="Добавить столбец"
           (click)="addColumn()"
         >
-          + Добавить столбец
+          +
         </button>
       </th>
     </tr>

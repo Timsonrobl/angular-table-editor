@@ -16,7 +16,7 @@ export class TableService {
 
   getObjectsArray() {
     // formatting back from 2d array to array of objects
-    const formattedObject = [] as { [key: string]: string }[];
+    const formattedObject: { [key: string]: string }[] = [];
     this.table.data.forEach((row, rowIndex) => {
       formattedObject.push({});
       this.table.columns.forEach((column, columnIndex) => {

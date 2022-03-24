@@ -16,11 +16,11 @@ export class TextComponent implements OnInit {
     '[{"name":"Name 1","year":"2010"},{"name":"Name 2","year":"1997"},{"name":"Name3","year":"2004"}]'
   );
 
-  parseJSON() {
+  processJSON(input: string) {
     // parsing JSON and handling JSON parser errors
-    let parsedData; //: { [key: string]: any }[];
+    let parsedData;
     try {
-      parsedData = JSON.parse(this.textInput.value);
+      parsedData = JSON.parse(input);
     } catch (error) {
       if (error instanceof SyntaxError) {
         alert(`Ошибка парсинга JSON: ${error.message}`);
@@ -37,34 +37,62 @@ export class TextComponent implements OnInit {
       alert('Ошибка формата данных');
       return;
     }
-    this.tableService.table.columns = Object.keys(parsedData[0]);
-    let tableData: string[][] = [];
+    const columns = Object.keys(parsedData[0]);
+    let data: string[][] = [];
     parsedData.forEach((row, rowIndex) => {
-      tableData.push([]);
-      this.tableService.table.columns.forEach((column, columnIndex) => {
-        tableData[rowIndex][columnIndex] = row[column]
-          ? row[column].toString()
-          : '';
+      data.push([]);
+      columns.forEach((column, columnIndex) => {
+        data[rowIndex][columnIndex] = row[column]?.toString() || '';
       });
     });
-    return tableData;
+    return {
+      columns,
+      data,
+    };
+  }
+
+  processCSV(input: string) {
+    const csvData = parseCSV(input, {
+      skip_empty_lines: true,
+    });
+    const columns: string[] = csvData[0];
+    const data: string[][] = csvData.splice(1);
+    return {
+      columns,
+      data,
+    };
   }
 
   processInput() {
     if (!this.textInput.value) return;
-    if (this.textInput.value.startsWith('[')) {
-      const tableData = this.parseJSON();
-      if (tableData) {
-        this.tableService.table.data = tableData;
+    if (
+      this.textInput.value.startsWith('[') &&
+      this.textInput.value.endsWith(']')
+    ) {
+      const tableData = this.processJSON(this.textInput.value);
+      if (tableData?.data) {
+        this.tableService.table = tableData;
       } else return;
     } else {
-      const csvData = parseCSV(this.textInput.value, {
-        skip_empty_lines: true,
-      });
-      this.tableService.table.columns = csvData[0];
-      this.tableService.table.data = csvData.splice(1);
+      let csvData;
+      try {
+        csvData = this.processCSV(this.textInput.value);
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(`Ошибка парсинга CSV: ${error.message}`);
+        }
+        return;
+      }
+      this.tableService.table = csvData;
     }
     this.router.navigate(['table']);
+  }
+
+  async onFileUpload(event: Event) {
+    const file = (<HTMLInputElement>event.target).files?.[0];
+    if (!file) return;
+    const data = await file.text();
+    this.textInput.setValue(data);
   }
 
   downloadFile(event: MouseEvent) {

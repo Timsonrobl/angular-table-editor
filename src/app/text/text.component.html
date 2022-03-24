@@ -23,6 +23,11 @@
 
   <div class="m-3">
     <label for="formFile" class="form-label">Загрузить данные из файла:</label>
-    <input class="form-control" type="file" id="formFile" />
+    <input
+      class="form-control"
+      type="file"
+      id="formFile"
+      (change)="onFileUpload($event)"
+    />
   </div>
 </div>

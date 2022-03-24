@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExportTypes, TableService } from '../table.service';
 
+function arrayHasDuplicates(array: any[]) {
+  return new Set(array).size !== array.length;
+}
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -14,6 +18,13 @@ export class TableComponent implements OnInit {
   trackCell = (index: number, cell: string) => index + cell;
 
   onExportClick(type: ExportTypes) {
+    if (
+      this.tableService.table.columns.includes('') ||
+      arrayHasDuplicates(this.tableService.table.columns)
+    ) {
+      alert('Для экспорта все столбцы должны иметь *уникальные* названия');
+      return;
+    }
     this.tableService.exportType = type;
     this.router.navigate(['text']);
   }
@@ -28,8 +39,8 @@ export class TableComponent implements OnInit {
     this.table.columns[column] = target.innerText;
   }
 
-  deleteRow(row: number) {
-    this.table.data.splice(row, 1);
+  deleteRow(rowIndex: number) {
+    this.table.data.splice(rowIndex, 1);
   }
 
   swapRows(rowA: number, rowB: number) {
@@ -39,7 +50,8 @@ export class TableComponent implements OnInit {
   }
 
   addRow() {
-    this.table.data.push(Array(this.table.columns.length).fill(''));
+    const emptyRow = Array(this.table.columns.length).fill('');
+    this.table.data.push(emptyRow);
   }
 
   addColumn() {
